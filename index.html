@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Clan Logger - Convert clan info to Discord format</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tool to format clan information for Discord posts">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+   :root {
+  --bg-dark: #0f172a;
+  --bg-medium: #1e293b;
+  --bg-light: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --success: #10b981;
+  --error: #ef4444;
+  --border-radius: 1rem;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: linear-gradient(-45deg, #ff6ec4, #7873f5, #4ade80, #facc15);
+  background-size: 400% 400%;
+  animation: gradientDrip 10s ease infinite;
+}
+
+@keyframes gradientDrip {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 1rem;
+  line-height: 1.6;
+}
+body {
+  background: linear-gradient(-45deg, #ff6ec4, #7873f5, #4ade80, #facc15);
+  background-size: 400% 400%;
+  animation: gradientDrip 10s ease infinite;
+}
+
+@keyframes gradientDrip {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.box {
+  background: var(--bg-medium);
+  padding: 2.5rem;
+  border-radius: var(--border-radius);
+backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.4); /* darker vibes fr */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* icy outline */
+  width: 100%;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.025em;
+}
+
+.input-group {
+  margin-bottom: 1.75rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+textarea {
+  width: 100%;
+  height: 160px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: calc(var(--border-radius) - 0.25rem);
+  padding: 1.25rem;
+  font-size: 1rem;
+  resize: vertical;
+  background: rgba(15, 23, 42, 0.5);
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  transition: var(--transition);
+  line-height: 1.6;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+textarea::placeholder {
+  color: #64748b;
+  opacity: 0.7;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: calc(var(--border-radius) - 0.25rem);
+  cursor: pointer;
+  transition: var(--transition);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+
+button:active {
+  transform: translateY(0);
+}
+
+button.secondary {
+  background: transparent;
+  border: 1px solid var(--bg-light);
+  color: var(--text-secondary);
+}
+
+button.secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+#output {
+  background: rgba(15, 23, 42, 0.5);
+  padding: 1.5rem;
+  border-radius: calc(var(--border-radius) - 0.25rem);
+  margin-top: 1.5rem;
+  white-space: pre-wrap;
+  border-left: 4px solid var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.status {
+  padding: 1rem;
+  border-radius: calc(var(--border-radius) - 0.25rem);
+  margin-top: 1.5rem;
+  text-align: center;
+  display: none;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.status.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  border-color: rgba(16, 185, 129, 0.2);
+  display: block;
+}
+
+.status.error {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+  border-color: rgba(239, 68, 68, 0.2);
+  display: block;
+}
+
+.loading {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255,255,255,.2);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Modern scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Clan Info to Discord</h1>
+    <div class="input-group">
+      <label for="userInput">Enter clan information:</label>
+      <textarea id="userInput" placeholder="Example: i found a pvp clan led by yuki with about 10 members, they're active in NA timezone..."></textarea>
+    </div>
+    
+    <div class="button-group">
+      <button onclick="sendInput()" id="sendButton">
+        <span id="buttonText">Send to Discord</span>
+      </button>
+      <button class="secondary" onclick="copyOutput()">Copy Output</button>
+    </div>
+    
+    <div id="status" class="status"></div>
+    
+    <pre id="output"></pre>
+  </div>
+
+  <script>
+    const webhookURL = "https://discord.com/api/webhooks/1363171815731757086/Hcn0z1n4hGDDjEOqGi2XXwnzMKXiKRLP0Isknum7EhDelzJ0A8cFanZpF3LgPwEEYSks"; // replace with your webhook URL
+    const geminiAPIKey = "AIzaSyAaTAFayT6v2IsY0DgZWlEn6n8K6gAjdwY"; // replace with your Gemini API key
+
+    async function sendInput() {
+      const input = document.getElementById("userInput").value.trim();
+      const outputEl = document.getElementById("output");
+      const statusEl = document.getElementById("status");
+      const buttonText = document.getElementById("buttonText");
+      const sendButton = document.getElementById("sendButton");
+
+      // Clear previous status
+      statusEl.className = "status";
+      statusEl.textContent = "";
+      
+      if (!input) {
+        statusEl.className = "status error";
+        statusEl.textContent = "Please enter some clan information";
+        return;
+      }
+
+      // Show loading state
+      buttonText.innerHTML = '<div class="loading"></div>';
+      sendButton.disabled = true;
+      outputEl.textContent = "Processing...";
+
+      try {
+        // Process with Gemini
+        const geminiRes = await fetch(
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiAPIKey,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{
+                  text: `Format this clan information into a clean Discord message with the following structure:
+                  - Clan name/type (e.g., PVP, Social, etc.)
+                  - Leader name
+                  - Member count (if available)
+                  - Timezone/region (if available)
+                  - Any other notable information
+                  
+                  Format like this:
+                  
+                  **Clan Found:** [name/type]
+                  **Leader:** [name]
+                  **Members:** [count] (if known)
+                  **Region:** [region] (if known)
+                  **Extra Info:** [any additional details]
+and your output must be the the info like above do not show any thinking like.. Okay, I can do that. Since you only provided "Hi" as information, I'll interpret it as the only detail about the clan. Here's the formatted Discord message:
+
+                  
+                  Here's the information to format:
+                  "${input}"`
+                }]
+              }]
+            })
+          }
+        );
+
+        if (!geminiRes.ok) {
+          throw new Error("Failed to process with Gemini");
+        }
+
+        const geminiData = await geminiRes.json();
+        const result = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || "Failed to process the clan information.";
+
+        outputEl.textContent = result;
+
+        // Extract information for embed
+        const clanNameMatch = result.match(/\*\*Clan Found:\*\*\s*(.+)/i);
+        const leaderMatch = result.match(/\*\*Leader:\*\*\s*(.+)/i);
+        const membersMatch = result.match(/\*\*Members:\*\*\s*(.+)/i);
+        const regionMatch = result.match(/\*\*Region:\*\*\s*(.+)/i);
+        const extraMatch = result.match(/\*\*Extra Info:\*\*\s*([\s\S]+)/i);
+
+        // Prepare Discord embed
+        const embed = {
+          title: "New Clan Report",
+          color: 0x6366f1,
+          description: result,
+          fields: [],
+          timestamp: new Date().toISOString(),
+          footer: {
+            text: "Clan Logger"
+          }
+        };
+
+        if (clanNameMatch) embed.fields.push({ name: "Clan", value: clanNameMatch[1], inline: true });
+        if (leaderMatch) embed.fields.push({ name: "Leader", value: leaderMatch[1], inline: true });
+        if (membersMatch) embed.fields.push({ name: "Members", value: membersMatch[1], inline: true });
+        if (regionMatch) embed.fields.push({ name: "Region", value: regionMatch[1], inline: true });
+        if (extraMatch) embed.fields.push({ name: "Extra Info", value: extraMatch[1] });
+
+        // Send to Discord with embed
+        const discordRes = await fetch(webhookURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            embeds: [embed]
+          })
+        });
+
+        if (!discordRes.ok) {
+          throw new Error("Failed to send to Discord");
+        }
+
+        statusEl.className = "status success";
+        statusEl.textContent = "Successfully sent to Discord!";
+      } catch (error) {
+        console.error(error);
+        statusEl.className = "status error";
+        statusEl.textContent = error.message || "An error occurred";
+        outputEl.textContent = "Error: " + (error.message || "Failed to process");
+      } finally {
+        // Reset button state
+        buttonText.textContent = "Send to Discord";
+        sendButton.disabled = false;
+      }
+    }
+
+    function copyOutput() {
+      const outputEl = document.getElementById("output");
+      const statusEl = document.getElementById("status");
+      
+      if (!outputEl.textContent.trim()) {
+        statusEl.className = "status error";
+        statusEl.textContent = "No output to copy";
+        return;
+      }
+      
+      navigator.clipboard.writeText(outputEl.textContent)
+        .then(() => {
+          statusEl.className = "status success";
+          statusEl.textContent = "Copied to clipboard!";
+        })
+        .catch(err => {
+          statusEl.className = "status error";
+          statusEl.textContent = "Failed to copy";
+          console.error(err);
+        });
+    }
+  </script>
+</body>
+</html>
