@@ -1,4 +1,5 @@
 ## 🔧 How to Use This
+First download the html file
 
 1. Open **File Explorer**.
 2. Navigate to your **Downloads** folder.
